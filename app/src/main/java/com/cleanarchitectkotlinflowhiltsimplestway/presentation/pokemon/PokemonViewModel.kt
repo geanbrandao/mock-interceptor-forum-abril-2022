@@ -1,24 +1,24 @@
-package com.cleanarchitectkotlinflowhiltsimplestway.presentation.splash
+package com.cleanarchitectkotlinflowhiltsimplestway.presentation.pokemon
 
 import androidx.lifecycle.ViewModel
-import com.cleanarchitectkotlinflowhiltsimplestway.domain.useCases.GetPokemonList
+import com.cleanarchitectkotlinflowhiltsimplestway.domain.useCases.GetPokemonInfo
 import com.cleanarchitectkotlinflowhiltsimplestway.presentation.State
 import com.cleanarchitectkotlinflowhiltsimplestway.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
+import java.lang.Exception
 import javax.inject.Inject
+import kotlinx.coroutines.flow.flow
 
 @HiltViewModel
-class SplashActivityViewModel @Inject constructor(
-    private val getPokemonList: GetPokemonList
+class PokemonViewModel @Inject constructor(
+    private val getPokemonInfo: GetPokemonInfo
 ) : ViewModel() {
 
-    fun fetchData() = flow {
+    fun fetchData(id: Int) = flow {
         emit(State.LoadingState(isLoading = true))
-        delay(1500)
+        kotlinx.coroutines.delay(1000)
         try {
-            emit(State.DataState(getPokemonList()))
+            emit(State.DataState(getPokemonInfo(id)))
         } catch (e: Exception) {
             e.printStackTrace()
             emit(Utils.resolveError(e))

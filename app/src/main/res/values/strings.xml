@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Clean Architect Kotlin Flow Hilt Simplest way</string>
+    <string name="button_text_try_again">Tertar novamente</string>
+    <string name="button_text_next">Próximo</string>
 </resources>

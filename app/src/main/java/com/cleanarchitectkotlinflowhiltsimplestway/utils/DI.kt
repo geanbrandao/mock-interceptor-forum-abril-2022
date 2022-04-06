@@ -18,6 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+import okhttp3.logging.HttpLoggingInterceptor
 
 @Module
 @Suppress("unused")
@@ -38,11 +39,6 @@ class NetworkModule {
             .build()
     }
 
-    private val READ_TIMEOUT = 30
-    private val WRITE_TIMEOUT = 30
-    private val CONNECTION_TIMEOUT = 10
-    private val CACHE_SIZE_BYTES = 10 * 1024 * 1024L // 10 MB
-
     @Provides
     @Singleton
     fun provideOkHttpClient(
@@ -54,9 +50,9 @@ class NetworkModule {
         okHttpClientBuilder.connectTimeout(CONNECTION_TIMEOUT.toLong(), TimeUnit.SECONDS)
         okHttpClientBuilder.readTimeout(READ_TIMEOUT.toLong(), TimeUnit.SECONDS)
         okHttpClientBuilder.writeTimeout(WRITE_TIMEOUT.toLong(), TimeUnit.SECONDS)
-        okHttpClientBuilder.cache(cache)
+//        okHttpClientBuilder.cache(cache)
         okHttpClientBuilder.addInterceptor(headerInterceptor)
-
+        okHttpClientBuilder.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
 
         return okHttpClientBuilder.build()
     }
@@ -72,14 +68,12 @@ class NetworkModule {
         }
     }
 
-
     @Provides
     @Singleton
     internal fun provideCache(context: Context): Cache {
         val httpCacheDirectory = File(context.cacheDir.absolutePath, "HttpCache")
         return Cache(httpCacheDirectory, CACHE_SIZE_BYTES)
     }
-
 
     @Provides
     @Singleton
@@ -93,7 +87,11 @@ class NetworkModule {
         return retrofit.create(APIs::class.java)
     }
 
-
-
+    companion object {
+        private const val READ_TIMEOUT = 30
+        private const val WRITE_TIMEOUT = 30
+        private const val CONNECTION_TIMEOUT = 10
+        private const val CACHE_SIZE_BYTES = 10 * 1024 * 1024L // 10 MB
+    }
 
 }
