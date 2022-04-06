@@ -39,7 +39,7 @@ class SplashActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.fetchData().collect {
                 when (it) {
-                    is State.DataState -> handleSuccess(it.data.count)
+                    is State.DataState -> handleSuccess(it.data.results.size)
                     is State.ErrorState -> handleError(it.exception)
                     is State.LoadingState -> handleLoading(it.isLoading)
                 }
